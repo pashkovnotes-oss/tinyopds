@@ -199,8 +199,9 @@ namespace TinyOPDS.OPDS
                             new XElement("updated", DateTime.UtcNow.ToUniversalTime()),
                             new XElement("id", "tag:authors:" + group.Key),
                             new XElement("title", group.Key),
-                            new XElement("content", StringUtils.ApplyPluralForm(group.Value, Localizer.Language,
-                                                    string.Format(Localizer.Text("Total authors on {0}: {1}"), group.Key, group.Value)),
+                            new XElement("content","", 
+                                                //     StringUtils.ApplyPluralForm(group.Value, Localizer.Language,
+                                                //    string.Format(Localizer.Text("Total authors on {0}: {1}"), group.Key, group.Value)),
                                          new XAttribute("type", "text")),
                             new XElement("link", new XAttribute("href", "/authorsindex/" + Uri.EscapeDataString(group.Key)),
                                          new XAttribute("type", "application/atom+xml;profile=opds-catalog"))
