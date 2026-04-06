@@ -265,8 +265,9 @@ namespace TinyOPDS.OPDS
                 // Root level - group by first letter
                var firstLetterGroups = authors
                     .GroupBy(a => a.Substring(0, 1).ToUpperInvariant())
-                   // .Where(g => g.Count() > 0)
-                    //.ToDictionary(g => g.Key, g => g.Count());
+                    // .Where(g => g.Count() > 0)
+                    .Where(g => 1)
+                   //.ToDictionary(g => g.Key, g => g.Count());
                     .ToDictionary(g => g.Key, g => 1);
                 return firstLetterGroups;
             }
