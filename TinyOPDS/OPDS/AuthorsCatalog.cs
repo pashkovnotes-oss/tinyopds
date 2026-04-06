@@ -161,7 +161,9 @@ namespace TinyOPDS.OPDS
             if (string.IsNullOrEmpty(searchPattern))
             {
                 // Get all authors for initial navigation
-                authors = Library.GetAuthorsByName("", false);
+                // заменил!!!!!!!!!!!!!authors = Library.GetAuthorsByName("", false);
+                authors = Library.GetAuthorFirstLetters();
+                
                 var letters = new HashSet<string>();
 
                 foreach (var a in authors)
