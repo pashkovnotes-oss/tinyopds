@@ -855,7 +855,7 @@ namespace TinyOPDS.Data
         /// <summary>
         /// Returns sorted in alphabetical order list of library books genres (only genres with books)
         /// </summary>
-        public static List<Genre> Genres
+      /*  public static List<Genre> Genres
         {
             get
             {
@@ -881,7 +881,24 @@ namespace TinyOPDS.Data
                 }
             }
         }
+*/
+        public static List<Genre> Genres
+        {
+            get
+            {
+                if (cachedGenres == null)
+                {
+                    LoadGenresFromDatabase();
+                }
 
+                var useCyrillic = Properties.Settings.Default.SortOrder > 0;
+                var comparer = new OPDSComparer(useCyrillic);
+
+                return (cachedGenres ?? new List<Genre>())
+                    .OrderBy(g => useCyrillic ? g.Translation : g.Name, comparer)
+                    .ToList();
+            }
+        }
         /// <summary>
         /// Return list of new books (DEPRECATED - use GetNewBooksPaginated for large datasets)
         /// </summary>
