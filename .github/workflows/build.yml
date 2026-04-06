@@ -1,0 +1,25 @@
+name: build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1
+
+      - name: Build
+        run: msbuild TinyOPDS.sln /p:Configuration=Release
+
+      - name: Upload
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: |
+            TinyOPDS/bin/Release/
+            TinyOPDSCLI/bin/Release/
