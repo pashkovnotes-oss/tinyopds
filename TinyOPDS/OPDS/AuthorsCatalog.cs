@@ -314,6 +314,7 @@ namespace TinyOPDS.OPDS
                         }
                         return prefix;
                     })
+                    .Take(100)   ////////добавииииил-------------------------------------------------------
                     .ToList();
 
                 // Create groups only if we have multiple authors with the same prefix
