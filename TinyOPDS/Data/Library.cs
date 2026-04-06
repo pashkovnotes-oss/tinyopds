@@ -1555,6 +1555,20 @@ namespace TinyOPDS.Data
                     return GetAuthorsFromDatabase(pattern);
                 }
 
+//добавил
+                if (string.IsNullOrEmpty(pattern))
+                {
+                    if (cachedAuthorsFirstLetters != null && cachedAuthorsFirstLetters.Count > 0)
+                    {
+                        Log.WriteLine(LogLevel.Info, "Returning {0} author letters from cache", cachedAuthorsFirstLetters.Count);
+                        return new List<string>(cachedAuthorsFirstLetters);
+                    }
+
+                // fallback если кеш не готов
+                    Log.WriteLine(LogLevel.Warning, "Authors letters cache empty, falling back to database");
+                    return GetAuthorsFromDatabase(pattern);
+                }
+/*убрал
                 if (string.IsNullOrEmpty(pattern))
                 {
                     // For empty pattern, AuthorsCatalog expects ALL authors to build the alphabet
@@ -1597,6 +1611,7 @@ namespace TinyOPDS.Data
                         return GetAuthorsFromDatabase(pattern);
                     }
                 }
+                */
 
                 // Fall back to database if cache miss
                 return GetAuthorsFromDatabase(pattern);
@@ -1697,25 +1712,7 @@ namespace TinyOPDS.Data
         }
 
 
-        ////добавил
-        public static List<string> GetAuthorFirstLetters()
-        {
-            var result = new List<string>();
-
-            using (var cmd = new SQLiteCommand("SELECT DISTINCT SUBSTR(Author,1,1) FROM Books", Connection))
-            using (var reader = cmd.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    var letter = reader.GetString(0);
-                    if (!string.IsNullOrEmpty(letter))
-                        result.Add(letter.ToUpperInvariant());
-                }
-            }
-
-            return result;
-        }
-        ////добавил
+ 
 
 
 
