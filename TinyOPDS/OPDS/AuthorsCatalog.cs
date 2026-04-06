@@ -221,7 +221,8 @@ namespace TinyOPDS.OPDS
             foreach (string author in authors.Take(threshold))
             {
                 // Get books count directly
-                var booksCount = Library.GetBooksByAuthorCount(author);
+               ////МЕНЯЯЯЯЯЯЯЯЯЛ var booksCount = Library.GetBooksByAuthorCount(author);
+                var booksCount = 0;
 
                 // Use smart routing based on OPDS settings and author's book structure
                 string authorRoute = GetAuthorRoute(author);
