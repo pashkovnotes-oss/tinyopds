@@ -257,73 +257,54 @@ namespace TinyOPDS.OPDS
         /// <param name="currentPattern">Current search pattern</param>
         /// <param name="threshold">Threshold for grouping</param>
         /// <returns>Dictionary of group name to author count</returns>
-        private Dictionary<string, int> CreateNavigationGroups(List<string> authors, string currentPattern, int threshold)
-        {
-            var groups = new Dictionary<string, int>();
+private Dictionary<string, int> CreateNavigationGroups(List<string> authors, string currentPattern, int threshold)
+{
+    var groups = new Dictionary<string, int>();
 
-            if (string.IsNullOrEmpty(currentPattern))
+    if (string.IsNullOrEmpty(currentPattern))
+    {
+        // только уникальные первые буквы, без подсчёта
+        return authors
+            .Select(a => a.Substring(0, 1).ToUpperInvariant())
+            .Distinct()
+            .ToDictionary(k => k, k => 1);
+    }
+    else
+    {
+        int nextCharPos = currentPattern.Length;
+
+        var filteredAuthors = authors
+            .Where(a => a.StartsWith(currentPattern, StringComparison.InvariantCultureIgnoreCase))
+            .ToList();
+
+        var prefixes = filteredAuthors
+            .Where(a => a.Length > nextCharPos)
+            .Where(a => char.IsLetter(a[nextCharPos]))
+            .Select(a =>
             {
-                // Root level - group by first letter
-                var firstLetterGroups = authors
-                    .GroupBy(a => a.Substring(0, 1).ToUpperInvariant())
-                    .Where(g => g.Count() > 0)
-                    .ToDictionary(g => g.Key, g => g.Count());
+                string prefix = a.Substring(0, nextCharPos + 1);
 
-                return firstLetterGroups;
-            }
-            else
-            {
-                // Deeper level - extend current pattern by one character
-                int nextCharPos = currentPattern.Length;
-
-                // Filter authors that start with current pattern (case-insensitive)
-                var filteredAuthors = authors
-                    .Where(a => a.StartsWith(currentPattern, StringComparison.InvariantCultureIgnoreCase))
-                    .ToList();
-
-                // Create groups for the next character position
-                // Only group by letters, skip special characters
-                var potentialGroups = filteredAuthors
-                    .Where(a => a.Length > nextCharPos)
-                    .Where(a => char.IsLetter(a[nextCharPos])) // Only process if next character is a letter
-                    .GroupBy(a => {
-                        // Get substring up to the next character
-                        string prefix = a.Substring(0, nextCharPos + 1);
-                        // Properly handle case for Cyrillic and other alphabets
-                        if (prefix.Length > 0)
-                        {
-                            // First character uppercase, rest lowercase
-                            char[] chars = prefix.ToCharArray();
-                            chars[0] = char.ToUpperInvariant(chars[0]);
-                            for (int i = 1; i < chars.Length; i++)
-                            {
-                                chars[i] = char.ToLowerInvariant(chars[i]);
-                            }
-                            return new string(chars);
-                        }
-                        return prefix;
-                    })
-                    .ToList();
-
-                // Create groups only if we have multiple authors with the same prefix
-                foreach (var group in potentialGroups)
+                if (prefix.Length > 0)
                 {
-                    var groupKey = group.Key;
+                    char[] chars = prefix.ToCharArray();
+                    chars[0] = char.ToUpperInvariant(chars[0]);
+                    for (int i = 1; i < chars.Length; i++)
+                        chars[i] = char.ToLowerInvariant(chars[i]);
 
-                    // Count all authors that would belong to this group
-                    // This includes authors with both Cyrillic and Latin characters
-                    var totalAuthorsForGroup = filteredAuthors
-                        .Count(a => a.StartsWith(groupKey, StringComparison.InvariantCultureIgnoreCase));
-
-                    // Only create group if we have multiple authors
-                    if (totalAuthorsForGroup > 1)
-                    {
-                        groups[groupKey] = totalAuthorsForGroup;
-                    }
+                    return new string(chars);
                 }
 
-                return groups;
-            }
+                return prefix;
+            })
+            .Distinct();
+
+        foreach (var key in prefixes)
+        {
+            groups[key] = 1; // без Count()
         }
+
+        return groups;
+    }
+}
     }
 }
