@@ -162,6 +162,15 @@ namespace TinyOPDS.OPDS
             {
                 // Get all authors for initial navigation
                 authors = Library.GetAuthorsByName("", false);
+                var letters = new HashSet<string>();
+
+                foreach (var a in authors)
+                    {
+                        if (!string.IsNullOrEmpty(a))
+                        letters.Add(a.Substring(0, 1).ToUpperInvariant());
+                    }
+
+                authors = letters.ToList();
             }
             else
             {
