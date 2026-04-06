@@ -222,7 +222,7 @@ namespace TinyOPDS.OPDS
             {
                 // Get books count directly
                ////МЕНЯЯЯЯЯЯЯЯЯЛ var booksCount = Library.GetBooksByAuthorCount(author);
-                var booksCount = 0;
+                var booksCount = 1;
 
                 // Use smart routing based on OPDS settings and author's book structure
                 string authorRoute = GetAuthorRoute(author);
