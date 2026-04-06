@@ -263,12 +263,11 @@ namespace TinyOPDS.OPDS
             if (string.IsNullOrEmpty(currentPattern))
             {
                 // Root level - group by first letter
-               var firstLetterGroups = authors
+                var firstLetterGroups = authors
                     .GroupBy(a => a.Substring(0, 1).ToUpperInvariant())
                     .Where(g => g.Count() > 0)
-                  
-                   //.ToDictionary(g => g.Key, g => g.Count());
-                    .ToDictionary(g => g.Key, g => 1);
+                    .ToDictionary(g => g.Key, g => g.Count());
+
                 return firstLetterGroups;
             }
             else
