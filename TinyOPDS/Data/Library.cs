@@ -1696,6 +1696,30 @@ namespace TinyOPDS.Data
             }
         }
 
+
+        ////добавил
+        public static List<string> GetAuthorFirstLetters()
+        {
+            var result = new List<string>();
+
+            using (var cmd = new SQLiteCommand("SELECT DISTINCT SUBSTR(Author,1,1) FROM Books", Connection))
+            using (var reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    var letter = reader.GetString(0);
+                    if (!string.IsNullOrEmpty(letter))
+                        result.Add(letter.ToUpperInvariant());
+                }
+            }
+
+            return result;
+        }
+        ////добавил
+
+
+
+        
         /// <summary>
         /// Return number of books by specific author
         /// </summary>
